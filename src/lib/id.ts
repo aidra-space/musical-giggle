@@ -1,0 +1,7 @@
+import { ulid } from "ulid";
+
+export const ulidPattern = /^[0-9A-HJKMNP-TV-Z]{26}$/;
+
+export function newId(): string {
+  return ulid();
+}
