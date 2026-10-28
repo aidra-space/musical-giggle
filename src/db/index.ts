@@ -11,7 +11,17 @@ if (!databaseUrl) {
 
 const globalForDb = globalThis as unknown as { client?: Sql };
 
-const client = globalForDb.client ?? postgres(databaseUrl);
+const isLocalDatabase =
+  databaseUrl.includes("localhost") || databaseUrl.includes("127.0.0.1");
+
+
+const client =
+  globalForDb.client ??
+  postgres(databaseUrl, {
+    prepare: false,
+    max: process.env.NODE_ENV === "production" ? 1 : 10,
+    ssl: isLocalDatabase ? false : "require",
+  });
 
 if (process.env.NODE_ENV !== "production") {
   globalForDb.client = client;
